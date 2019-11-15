@@ -1,5 +1,7 @@
 {
   "name": "angularGame",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
