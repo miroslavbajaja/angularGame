@@ -1,17 +1,17 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Background
-    </ion-title>
-  </ion-toolbar>
+	<ion-toolbar>
+		<ion-title>
+			Background
+		</ion-title>
+	</ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <img [src]="currentImage" *ngIf="currentImage">
+  	<img [src]="currentImage" *ngIf="currentImage">
 
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
-      <ion-fab-button (click)="takePicture()">
-        <ion-icon name="camera"></ion-icon>
-      </ion-fab-button>
-  </ion-fab>
+  	<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+      	<ion-fab-button (click)="takePicture()">
+        	<ion-icon name="camera"></ion-icon>
+      	</ion-fab-button>
+  	</ion-fab>
 </ion-content>
