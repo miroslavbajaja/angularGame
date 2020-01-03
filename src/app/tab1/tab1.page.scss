@@ -2,3 +2,13 @@
   max-height: 35vh;
   overflow: hidden;
 }
+
+.buttons {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+canvas {
+  position: absolute;
+}

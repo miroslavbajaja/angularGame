@@ -7,17 +7,68 @@ import { ViewChild, ElementRef } from '@angular/core';
 	templateUrl: 'tab1.page.html',
 	styleUrls: ['tab1.page.scss']
 })
+
 export class Tab1Page {
 
-	//@ViewChild('myCanvas', {static: false}) myCanvas: ElementRef;
-	@ViewChild('myCanvas', {static: false} ) myCanvas;
+	canvas: any;
+	@ViewChild('myCanvas', {static: false} ) myCanvas: any;
+	//background: any;
+	//@ViewChild('canvasBackground', {static: false} ) canvasBackground: any;
 
-	constructor() {
-		console.log(this.myCanvas);
-	}
+	constructor() {}
 
 	ngAfterViewInit() {
-		console.log(this.myCanvas);
+		this.canvas = this.myCanvas.nativeElement;
+		//this.background = this.canvasBackground.nativeElement;
+		this.prepareCanvas();
 	}
+
+	prepareCanvas()
+	{
+		var CANVAS_HEIGHT:number = 1920;
+		var CANVAS_WIDTH:number = 1080;
+		var config: Phaser.Types.Core.GameConfig = {
+			type: Phaser.WEBGL,
+			width: CANVAS_WIDTH,
+			height: CANVAS_HEIGHT,
+			backgroundColor: '#2d2d2d',
+			canvas: this.canvas,
+			scene: {
+				preload: preload,
+				create: create,
+				update: update
+			}
+		};
+		var game: Phaser.Game = new Phaser.Game(config);
+
+		var scale:number, top:number, left:number;
+        scale = window.innerWidth / CANVAS_WIDTH;
+        top = -((CANVAS_HEIGHT - window.innerHeight) / 2);
+		left = -((CANVAS_WIDTH - window.innerWidth) / 2);
+		
+		this.canvas.style.transform = 'scale(' + scale + ')';
+		this.canvas.style.width = CANVAS_WIDTH + 'px';
+		this.canvas.style.height = CANVAS_HEIGHT + 'px';
+		this.canvas.style.top = (top - 73) + 'px';
+		this.canvas.style.left = left + 'px';
+
+		//this.background.style.backgroundColor = '#2d2d2d';
+		//this.background.style.width = '100%';
+		//this.background.style.height = '100%';
+	}
+}
+
+function preload()
+{
+	console.log('preload');
+}
+
+function create()
+{
+
+}
+
+function update()
+{
 
 }
