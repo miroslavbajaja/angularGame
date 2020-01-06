@@ -60,12 +60,31 @@ export class Tab1Page {
 
 function preload()
 {
-	console.log('preload');
+	this.load.setPath('assets');
+
+	this.load.multiatlas('images', 'images.json');
 }
 
 function create()
 {
+	var frames = this.anims.generateFrameNames('images', {
+		prefix: 'coin_',
+		end: 60,
+		zeroPad: 2,
+		suffix: '.png'
+	});
+	
+	this.anims.create({
+		key: 'coin',
+		frames: frames,
+		repeat: -1 
+	});
 
+	var coin = this.add.sprite(400, 300, 'images').play('coin').setActive(false);
+	coin.setInteractive();
+	coin.on('pointerclick', function(){
+		console.log('click');
+	});
 }
 
 function update()
