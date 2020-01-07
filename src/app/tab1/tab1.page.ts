@@ -46,7 +46,8 @@ export class Tab1Page {
 					res: {
 						width: this.CANVAS_WIDTH,
 						height: this.CANVAS_HEIGHT
-					}
+					},
+					play: play
 				}
 			}
 		};
@@ -58,10 +59,50 @@ export class Tab1Page {
 	{
 		if(this.isPlayed) return;
 		this.isPlayed = true;
-		console.log(this);
+		var scene = this.game.scene.getScene('default');
+		scene.play();
 	}
+}
 
+var coinDropDuration = 2000;
 
+function play()
+{
+	coinDropDuration = 2000;
+	this.score = 0;
+	this.scoreboard.setText('Score: 0');
+	this.gameOverBoard.setVisible(false);
+	throwCoin.call(this);
+}
+
+function throwCoin()
+{
+	var self = this;
+	var coins = this.coins, coin:any;
+	for(var i = 0, l = coins.length; i < l; i++)
+	{
+		if(!coins[i].active)
+		{
+			coin = coins[i];
+			break;
+		}
+	}
+	if(coinDropDuration > 500)
+	{
+		coinDropDuration -= 50;
+	}
+	coin.setActive(true).setVisible(true);
+	coin.setPosition(Phaser.Math.Between(coin.width / 2, this.res.width - coin.width / 2), - coin.height);
+	this.tweens.add({
+		targets: coin,
+		duration: coinDropDuration,
+		y: this.res.height + coin.height,
+		onComplete: function(){
+			// end game
+			self.gameOverBoard.setVisible(true);
+			self.tab.isPlayed = false;
+		}
+	});
 }
 
 function init()
@@ -89,8 +130,12 @@ function preload()
 	this.load.image('cloud', 'cloud1.png');
 }
 
+var noCoin:number = 5;
+
 function create()
 {
+	var self = this;
+
 	var frames = this.anims.generateFrameNames('images', {
 		prefix: 'coin_',
 		end: 60,
@@ -104,26 +149,35 @@ function create()
 		repeat: -1 
 	});
 
-	var coin = this.add.sprite(400, 300, 'images').play('coin').setInteractive();
-	coin.on('pointerdown', function(pointer, gameObject){
-		console.log(this);
-	});
+	this.coins = [];
+	for(var i = 0; i < noCoin; i++)
+	{
+		var coin = this.add.sprite(0, 0, 'images').play('coin').setInteractive().setActive(false).setVisible(false);
+		coin.on('pointerdown', function(pointer, gameObject){
+			var coin = this;
+			self.tweens.killTweensOf(coin);
+			self.tweens.add({
+				targets: this,
+				duration: 100,
+				x: self.res.width,
+				y: 0,
+				onComplete: function(){
+					coin.setActive(false).setVisible(false);
+					self.score++;
+					self.scoreboard.setText('Score: ' + self.score);
+					throwCoin.call(self);
+				}
+			});
+		});
+		this.coins.push(coin);
+	}
 
-	//this.add.image(400, 600, 'cloud').setOrigin(0).setInteractive();
+	// scoreboard
+	this.score = 0;
+	this.scoreboard = this.add.text(750, 20, 'Score: 0', { fontFamily: '"Roboto Condensed"', fontSize: '80px' });
 
-	//this.input.on('gameobjectdown', function (pointer, gameObject) {
-		//console.log(gameObject);
-	//}, this);
-
-	/*
-    this.tweens.add({
-        targets: gameObject,
-        alpha: 0,
-        scaleX: 0,
-        scaleY: 0
-	});
-    gameObject.disableInteractive();
-	*/
+	this.gameOverBoard = this.add.text(this.res.width / 2 - 250, this.res.height / 2 - 50, 'Game Over', { fontFamily: '"Roboto Condensed"', fontSize: '120px', align: 'center', color: 'red' });
+	this.gameOverBoard.setVisible(false);
 }
 
 function update()
