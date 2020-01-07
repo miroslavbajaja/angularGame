@@ -7,8 +7,8 @@
 </ion-header>
 
 <ion-content>
-	<canvas #myCanvas></canvas>
+	<div #canvasBackground class="canvasBackground"></div>
 	<section class="buttons">
-		<ion-button expand="block">PLAY</ion-button>
+		<ion-button expand="block" (click)="play()" disabled={{isPlayed}}>PLAY</ion-button>
 	</section>
 </ion-content>

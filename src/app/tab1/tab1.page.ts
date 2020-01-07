@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import * as Phaser from 'phaser';
 import { ViewChild, ElementRef } from '@angular/core';
+import { IonItem } from '@ionic/angular';
 
 @Component({
 	selector: 'app-tab1',
@@ -10,52 +11,74 @@ import { ViewChild, ElementRef } from '@angular/core';
 
 export class Tab1Page {
 
-	canvas: any;
-	@ViewChild('myCanvas', {static: false} ) myCanvas: any;
-	//background: any;
-	//@ViewChild('canvasBackground', {static: false} ) canvasBackground: any;
+	parent: any;
+	@ViewChild('canvasBackground', {static: false} ) background: any;
+
+	CANVAS_HEIGHT:number = 1920;
+	CANVAS_WIDTH:number = 1080;
+
+	isPlayed: boolean = false;
+
+	game: Phaser.Game;
 
 	constructor() {}
 
 	ngAfterViewInit() {
-		this.canvas = this.myCanvas.nativeElement;
-		//this.background = this.canvasBackground.nativeElement;
+		this.parent = this.background.nativeElement;
 		this.prepareCanvas();
 	}
 
 	prepareCanvas()
 	{
-		var CANVAS_HEIGHT:number = 1920;
-		var CANVAS_WIDTH:number = 1080;
 		var config: Phaser.Types.Core.GameConfig = {
 			type: Phaser.WEBGL,
-			width: CANVAS_WIDTH,
-			height: CANVAS_HEIGHT,
+			width: this.CANVAS_WIDTH,
+			height: this.CANVAS_HEIGHT,
 			backgroundColor: '#2d2d2d',
-			canvas: this.canvas,
+			parent: this.parent,
 			scene: {
+				init: init,
 				preload: preload,
 				create: create,
-				update: update
+				update: update,
+				extend: {
+					tab: this,
+					res: {
+						width: this.CANVAS_WIDTH,
+						height: this.CANVAS_HEIGHT
+					}
+				}
 			}
 		};
-		var game: Phaser.Game = new Phaser.Game(config);
 
-		var scale:number, top:number, left:number;
-        scale = window.innerWidth / CANVAS_WIDTH;
-        top = -((CANVAS_HEIGHT - window.innerHeight) / 2);
-		left = -((CANVAS_WIDTH - window.innerWidth) / 2);
-		
-		this.canvas.style.transform = 'scale(' + scale + ')';
-		this.canvas.style.width = CANVAS_WIDTH + 'px';
-		this.canvas.style.height = CANVAS_HEIGHT + 'px';
-		this.canvas.style.top = (top - 73) + 'px';
-		this.canvas.style.left = left + 'px';
-
-		//this.background.style.backgroundColor = '#2d2d2d';
-		//this.background.style.width = '100%';
-		//this.background.style.height = '100%';
+		this.game = new Phaser.Game(config);
 	}
+
+	play()
+	{
+		if(this.isPlayed) return;
+		this.isPlayed = true;
+		console.log(this);
+	}
+
+
+}
+
+function init()
+{
+	var canvas = this.game.canvas;
+	
+	var scale:number, top:number, left:number;
+    scale = window.innerWidth / this.res.width;
+    top = -((this.res.height - window.innerHeight) / 2);
+	left = -((this.res.width - window.innerWidth) / 2);
+	
+	canvas.style.position = 'absolute';
+	canvas.style.transform = 'scale(' + scale + ')';
+	canvas.style.width = this.res.width + 'px';
+	canvas.style.height = this.res.height + 'px';
+	canvas.style.top = (top - 73) + 'px';
+	canvas.style.left = left + 'px';
 }
 
 function preload()
@@ -63,6 +86,7 @@ function preload()
 	this.load.setPath('assets');
 
 	this.load.multiatlas('images', 'images.json');
+	this.load.image('cloud', 'cloud1.png');
 }
 
 function create()
@@ -80,11 +104,26 @@ function create()
 		repeat: -1 
 	});
 
-	var coin = this.add.sprite(400, 300, 'images').play('coin').setActive(false);
-	coin.setInteractive();
-	coin.on('pointerclick', function(){
-		console.log('click');
+	var coin = this.add.sprite(400, 300, 'images').play('coin').setInteractive();
+	coin.on('pointerdown', function(pointer, gameObject){
+		console.log(this);
 	});
+
+	//this.add.image(400, 600, 'cloud').setOrigin(0).setInteractive();
+
+	//this.input.on('gameobjectdown', function (pointer, gameObject) {
+		//console.log(gameObject);
+	//}, this);
+
+	/*
+    this.tweens.add({
+        targets: gameObject,
+        alpha: 0,
+        scaleX: 0,
+        scaleY: 0
+	});
+    gameObject.disableInteractive();
+	*/
 }
 
 function update()
