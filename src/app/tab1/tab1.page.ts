@@ -180,7 +180,7 @@ function create()
 
 	// scoreboard
 	this.score = 0;
-	this.scoreboard = this.add.text(750, 20, 'Score: 0', { fontFamily: '"Roboto Condensed"', fontSize: '80px' });
+	this.scoreboard = this.add.text(700, 250, 'Score: 0', { fontFamily: '"Roboto Condensed"', fontSize: '80px' });
 
 	this.gameOverBoard = this.add.text(this.res.width / 2 - 250, this.res.height / 2 - 50, 'Game Over', { fontFamily: '"Roboto Condensed"', fontSize: '120px', align: 'center', color: 'red' });
 	this.gameOverBoard.setVisible(false);
