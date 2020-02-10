@@ -1,9 +1,14 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab Three
+      Options
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-item>
+    <ion-label>SOUND ENABLED</ion-label>
+    <ion-checkbox (click)="soundEnabled($event)" checked color="primary" slot="start"></ion-checkbox>
+  </ion-item>
+</ion-content>

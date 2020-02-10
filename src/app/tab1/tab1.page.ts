@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import * as Phaser from 'phaser';
 import { ViewChild, ElementRef } from '@angular/core';
 import { IonItem } from '@ionic/angular';
+import { global } from '../app.module';
 
 @Component({
 	selector: 'app-tab1',
@@ -46,8 +47,7 @@ export class Tab1Page {
 					res: {
 						width: this.CANVAS_WIDTH,
 						height: this.CANVAS_HEIGHT
-					},
-					play: play
+					}
 				}
 			}
 		};
@@ -60,7 +60,7 @@ export class Tab1Page {
 		if(this.isPlayed) return;
 		this.isPlayed = true;
 		var scene = this.game.scene.getScene('default');
-		scene.play();
+		play.call(scene);
 	}
 }
 
@@ -89,7 +89,7 @@ function throwCoin()
 	}
 	if(coinDropDuration > 500)
 	{
-		coinDropDuration -= 50;
+		coinDropDuration -= 100;
 	}
 	coin.setActive(true).setVisible(true);
 	coin.setPosition(Phaser.Math.Between(coin.width / 2, this.res.width - coin.width / 2), - coin.height);
@@ -128,6 +128,9 @@ function preload()
 
 	this.load.multiatlas('images', 'images.json');
 	this.load.image('cloud', 'cloud1.png');
+	this.load.audio('coin', [
+        'coin.wav'
+    ]);
 }
 
 var noCoin:number = 5;
@@ -149,12 +152,15 @@ function create()
 		repeat: -1 
 	});
 
+	this.coinSound = this.sound.add('coin');
+
 	this.coins = [];
 	for(var i = 0; i < noCoin; i++)
 	{
 		var coin = this.add.sprite(0, 0, 'images').play('coin').setInteractive().setActive(false).setVisible(false);
 		coin.on('pointerdown', function(pointer, gameObject){
 			var coin = this;
+			if(global.sound) self.coinSound.play();
 			self.tweens.killTweensOf(coin);
 			self.tweens.add({
 				targets: this,

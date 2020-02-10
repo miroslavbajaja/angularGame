@@ -11,6 +11,10 @@ import { AppComponent } from './app.component';
 
 import { Camera } from '@ionic-native/camera/ngx';
 
+export var global = {
+  sound: true
+};
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
